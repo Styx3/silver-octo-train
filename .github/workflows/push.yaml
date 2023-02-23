@@ -15,9 +15,9 @@ on:
 
 jobs:
   microservice-push:
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
