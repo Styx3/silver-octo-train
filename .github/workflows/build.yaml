@@ -4,10 +4,10 @@ on:
 
 jobs:
   microservice-actions:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         service: [microservice_a,microservice_b,microservice_c]
-    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
