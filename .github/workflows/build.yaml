@@ -19,7 +19,7 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v4
         with:
-          context: ${{ matrix.service }}
+          context: "{{defaultContext}}:"${{ matrix.service }}
           tags: ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest,${{ secrets.REPOSITORY }}:${{ matrix.service }}-${{ github.run_number }}
 
       - name: Run and test container
@@ -38,6 +38,6 @@ jobs:
         if: steps.test.outputs.status == 'OK' 
         uses: docker/build-push-action@v4
         with:
-          context: ${{ matrix.service }}
+          context: "{{defaultContext}}:"${{ matrix.service }}
           push: true
           tags: ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest,${{ secrets.REPOSITORY }}:${{ matrix.service }}-${{ github.run_number }}            
