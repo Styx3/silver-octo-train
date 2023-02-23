@@ -1,4 +1,4 @@
-FROM break docker, fail all
+FROM python:3.10-alpine
 
 COPY app /app
 WORKDIR /app
