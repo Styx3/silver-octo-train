@@ -7,8 +7,10 @@ def main():
 
     if response:
         print('OK')
+        return 0
     else:
         print('ERROR')
+        return 1
 
 if __name__ == "__main__":
     main()
