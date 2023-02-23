@@ -28,8 +28,7 @@ jobs:
         id: test
         run: |
           docker run -d -p 8080:8080 ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest
-          sleep 5
-          curl localhost:8080
+          sleep 2
           echo ::set-output name=status::$(python test_suite.py http://localhost:8080)
 
       - name: Login to Docker Hub
