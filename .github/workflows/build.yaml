@@ -29,6 +29,7 @@ jobs:
         run: |
           docker run -d -p 8080:8080 ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest
           docker ps -a
+          curl localhost:8080
           echo ::set-output name=status::$(python test_suite.py http://localhost:8080)
 
       - name: Login to Docker Hub
