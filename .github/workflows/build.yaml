@@ -23,11 +23,12 @@ jobs:
           context: "${{ matrix.service }}"
           file: "${{ matrix.service }}/Dockerfile"
           tags: ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest,${{ secrets.REPOSITORY }}:${{ matrix.service }}-${{ github.run_number }}
-          
-      uses: ./.github/workflows/push.yaml
-      with:      
-        MICROSERVICE_NAME: "${{ matrix.service }}"
-      secrets:
-        REPOSITORY: ${{ secrets.REPOSITORY }}
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Call Push Workflow
+        uses: ./.github/workflows/push.yaml
+        with:      
+          MICROSERVICE_NAME: "${{ matrix.service }}"
+        secrets:
+          REPOSITORY: ${{ secrets.REPOSITORY }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
