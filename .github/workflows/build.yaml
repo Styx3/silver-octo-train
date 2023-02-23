@@ -22,7 +22,6 @@ jobs:
           context: "${{ matrix.service }}"
           file: "${{ matrix.service }}/Dockerfile"
           tags: ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest,${{ secrets.REPOSITORY }}:${{ matrix.service }}-${{ github.run_number }}
-          # load: true
 
       - name: Run and test container
         id: test
