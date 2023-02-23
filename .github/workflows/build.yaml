@@ -28,7 +28,7 @@ jobs:
     needs: microservice-actions
     uses: ./.github/workflows/push.yaml
     with:      
-      MICROSERVICE_NAME: "${{ matrix.service }}"
+      MICROSERVICE_NAME: ${{ matrix.service }}
     secrets:
       REPOSITORY: ${{ secrets.REPOSITORY }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
