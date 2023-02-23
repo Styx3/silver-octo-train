@@ -1,0 +1,37 @@
+name: Challenging CI
+on:
+  push:
+  
+jobs:
+  microservice-actions:
+    strategy:
+      matrix:
+        service: [microservice_a,microservice_b,microservice_c]
+    runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v2
+
+        - name: Build
+          uses: docker/build-push-action@v4
+          with:
+            context: ${{ matrix.service }}
+            tags: ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest,${{ secrets.REPOSITORY }}:${{ matrix.service }}-${{ github.run_number }}
+
+        - name: Run and test container
+          id: test
+          run: |
+            docker run -d -p 8080:8080 ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest
+            echo ::set-output name=status::$(python test_suite.py http://localhost:8080)
+
+        - name: Push
+          if: steps.test.outputs.status == 'OK' 
+          uses: docker/build-push-action@v4
+          with:
+            context: ${{ matrix.service }}
+            push: true
+            tags: ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest,${{ secrets.REPOSITORY }}:${{ matrix.service }}-${{ github.run_number }}            
