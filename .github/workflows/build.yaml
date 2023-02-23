@@ -4,10 +4,10 @@ on:
 
 jobs:
   microservice-actions:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         service: [microservice_a,microservice_b,microservice_c]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -23,13 +23,30 @@ jobs:
           context: "${{ matrix.service }}"
           file: "${{ matrix.service }}/Dockerfile"
           tags: ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest,${{ secrets.REPOSITORY }}:${{ matrix.service }}-${{ github.run_number }}
-      
-  call-push-actions:
-    needs: microservice-actions
-    uses: ./.github/workflows/push.yaml
-    with:      
-      MICROSERVICE_NAME: ${{ matrix.service }}
-    secrets:
-      REPOSITORY: ${{ secrets.REPOSITORY }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Run and test container
+        id: test
+        run: |
+          docker run -d -p 8080:8080 ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest
+          sleep 1
+          status=$(python test_suite.py http://localhost:8080)
+          if [[ $status == 'ERROR' ]]
+          then exit 1
+          fi
+          echo ::set-output name=status::$status
+
+      - name: Login to Docker Hub   
+        if: steps.test.outputs.status == 'OK'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push
+        if: steps.test.outputs.status == 'OK'
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: "${{ matrix.service }}"
+          file: "${{ matrix.service }}/Dockerfile"
+          tags: ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest,${{ secrets.REPOSITORY }}:${{ matrix.service }}-${{ github.run_number }}  
