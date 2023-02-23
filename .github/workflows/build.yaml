@@ -28,7 +28,7 @@ jobs:
         id: test
         run: |
           docker run -d -p 8080:8080 ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest
-          docker ps -a
+          sleep 5
           curl localhost:8080
           echo ::set-output name=status::$(python test_suite.py http://localhost:8080)
 
