@@ -29,8 +29,11 @@ jobs:
         continue-on-error: true
         run: |
           docker run -d -p 8080:8080 ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest
-          sleep 2
-          echo ::set-output name=status::$(python test_suite.py http://localhost:8080)
+          sleep 1
+          if [[ $(python test_suite.py http://localhost:8080) -eq 'ERROR' ]]
+          then exit 1
+          fi
+          echo ::set-output name=status::OK
 
       - name: Login to Docker Hub
         if: steps.test.outputs.status == 'OK'       
