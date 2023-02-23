@@ -1,5 +1,4 @@
-FROM python:3.10-alpine
-
+FROM BREAK THE DOCKERFILE SO PIPELINE FAILS
 COPY app /app
 WORKDIR /app
 
