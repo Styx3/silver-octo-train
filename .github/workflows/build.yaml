@@ -18,15 +18,15 @@ jobs:
 
       - name: Run and test container
         run: |
-          ls -laR
+          ls -laR /tmp/
 
       - name: Build
         uses: docker/build-push-action@v4
         with:
-          context: "./${{ matrix.service }}"
-          file: "./${{ matrix.service }}/Dockerfile"
+          context: "${{ matrix.service }}"
+          file: "${{ matrix.service }}/Dockerfile"
           tags: ${{ secrets.REPOSITORY }}:${{ matrix.service }}-latest,${{ secrets.REPOSITORY }}:${{ matrix.service }}-${{ github.run_number }}
-          load: true
+          # load: true
 
       - name: Run and test container
         id: test
