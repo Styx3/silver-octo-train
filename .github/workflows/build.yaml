@@ -5,6 +5,7 @@ on:
 jobs:
   microservice-actions:
     strategy:
+      fail-fast: false
       matrix:
         service: [microservice_a,microservice_b,microservice_c]
     runs-on: ubuntu-latest
